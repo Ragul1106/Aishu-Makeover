@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-rose: #e8b4b8;
+  --color-rose-dark: #d4a5a5;
+  --color-cream: #fdf8f5;
+  --color-charcoal: #2d2a26;
+  --color-gold: #c9a86c;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #fdf8f5;
+  color: #2d2a26;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f0eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4a5a5;
+  border-radius: 10px;
+} 
+
+
+
+/* @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --rose: #e8b4b8;
+  --rose-dark: #d4a5a5;
+  --cream: #fdf8f5;
+  --charcoal: #2d2a26;
+  --gold: #c9a86c;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--cream);
+  color: var(--charcoal);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Playfair Display", serif;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f0eb;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rose-dark);
+  border-radius: 10px;
+} */

@@ -9,10 +9,14 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md border-b border-rose-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40 backdrop-blur-md border-b border-white/10">
+      {" "}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
-          <Link href="/" className="text-2xl md:text-3xl font-bold text-[#2d2a26]">
+          <Link
+            href="/"
+            className="text-2xl md:text-3xl font-bold text-[#2d2a26]"
+          >
             Aishu <span className="text-[#d4a5a5]">Makeover</span>
           </Link>
 
@@ -38,7 +42,6 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (

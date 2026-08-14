@@ -8,10 +8,12 @@ export default function WhatsAppButton() {
   // Example: 919876543210 (for India)
   const phoneNumber = "919342156033"; // Aishu's WhatsApp number
   
-  const message = encodeURIComponent(
-    "Hi Aishu Makeover! I would like to book a makeover for my special function. Please share the available dates and packages."
-  );
-
+//   const message = encodeURIComponent(
+//     "Hi Aishu Makeover! I would like to book a makeover for my special function. Please share the available dates and packages."
+//   );
+const message = encodeURIComponent(
+  "வணக்கம் Aishu Makeover! எனது சிறப்பு நிகழ்ச்சிக்கு மேக்கப் புக்கிங் செய்ய விரும்புகிறேன். தயவுசெய்து கிடைக்கும் தேதிகள் மற்றும் பேக்கேஜ்களை பகிரவும்."
+);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (

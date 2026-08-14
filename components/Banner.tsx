@@ -4,29 +4,31 @@ import { motion } from "framer-motion";
 
 export default function Banner() {
   return (
-    <section className="relative h-[85vh] md:h-[95vh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-[85vh] md:h-[95vh] flex items-center justify-center overflow-hidden pt-16 md:pt-20">
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=2070')",
+          backgroundImage: "url('/images/banner.png')",
         }}
       />
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/45" />
 
-      {/* Soft decorative glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#e8b4b8]/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/65" />
+
+      {/* Soft Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#e8b4b8]/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl">
+      <div className="relative z-10 text-center px-4 max-w-5xl">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="text-white/90 tracking-[0.35em] uppercase text-xs md:text-sm mb-6 font-medium"
+          className="text-white/90 tracking-[0.35em] uppercase text-xs md:text-sm mb-5 font-medium"
         >
           Beauty • Transformation • Confidence
         </motion.p>
@@ -37,18 +39,37 @@ export default function Banner() {
           transition={{ duration: 0.8, delay: 0.15 }}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight"
         >
-          Aishu{" "}
-          <span className="text-[#e8b4b8]">Makeover</span>
+          Aishu <span className="text-[#e8b4b8]">Makeover</span>
         </motion.h1>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="text-base md:text-xl text-white/85 max-w-2xl mx-auto mb-10 leading-relaxed"
+          className="mb-9"
         >
-          Discover stunning transformations. From bridal elegance to glamorous party looks — crafted with love and perfection.
-        </motion.p>
+          <div className="flex flex-wrap justify-center gap-3 text-white/95 text-sm md:text-base">
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
+              Bridal Makeup
+            </span>
+
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
+              Mehandi
+            </span>
+
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
+              HD Makeup
+            </span>
+
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
+              Hairstyle
+            </span>
+
+            <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
+              Saree Pre-plated
+            </span>
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -65,15 +86,15 @@ export default function Banner() {
 
           <a
             href="/admin"
-            className="px-8 py-3.5 border border-white/40 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300"
+            className="px-8 py-3.5 border border-white/50 text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300"
           >
             Admin Panel
           </a>
         </motion.div>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#fdf8f5] to-transparent" />
+      {/* Bottom Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#fdf8f5] to-transparent pointer-events-none" />
     </section>
   );
 }

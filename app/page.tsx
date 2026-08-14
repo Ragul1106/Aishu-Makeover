@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import Banner from "../components/Banner";
 import ImageGallery from "../components/ImageGallery";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <Navbar />
       <Banner />
       <ImageGallery />
+      <WhatsAppButton />
 
       <footer className="bg-[#2d2a26] text-white py-12 text-center">
         <p className="text-2xl font-bold mb-2">

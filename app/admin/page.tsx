@@ -10,7 +10,15 @@ import Link from "next/link";
 export default function AdminPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [images, setImages] = useState([]);
+ interface ImageType {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  category?: string;
+}
+
+const [images, setImages] = useState<ImageType[]>([]);
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {

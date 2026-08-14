@@ -2,6 +2,7 @@ import Navbar from "../components/Navbar";
 import Banner from "../components/Banner";
 import ImageGallery from "../components/ImageGallery";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import InstagramButton from "@/components/InstagramButton";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
       <Banner />
       <ImageGallery />
+      <InstagramButton />
       <WhatsAppButton />
 
       <footer className="bg-[#2d2a26] text-white py-12 text-center">

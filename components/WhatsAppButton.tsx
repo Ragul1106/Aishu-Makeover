@@ -12,7 +12,7 @@ export default function WhatsAppButton() {
 //     "Hi Aishu Makeover! I would like to book a makeover for my special function. Please share the available dates and packages."
 //   );
 const message = encodeURIComponent(
-  "வணக்கம் Aishu Makeover! எனது சிறப்பு நிகழ்ச்சிக்கு மேக்கப் புக்கிங் செய்ய விரும்புகிறேன். தயவுசெய்து கிடைக்கும் தேதிகள் மற்றும் பேக்கேஜ்களை பகிரவும்."
+  "வணக்கம் Aishu Makeover 💄✨எனக்கு ஒரு முக்கியமான நிகழ்ச்சிக்காக Makeup Booking செய்ய வேண்டும். 😊உங்களிடம் Makeup Packages மற்றும் Charges பற்றிய details தெரிந்துகொள்ள விரும்புகிறேன்.மேலும், எனக்கு தேவையான தேதியில் Booking available-ஆ இருக்கிறதா என்பதையும் சொல்லுங்கள்.நன்றி ❤️"
 );
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

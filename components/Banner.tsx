@@ -9,7 +9,7 @@ export default function Banner() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: "url('/images/banner.png')",
+          backgroundImage: "url('/images/banner.jpeg')",
         }}
       />
 

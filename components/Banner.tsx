@@ -48,7 +48,7 @@ export default function Banner() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mb-9"
         >
-          <div className="flex flex-wrap justify-center gap-3 text-white/95 text-sm md:text-base">
+          {/* <div className="flex flex-wrap justify-center gap-3 text-white/95 text-sm md:text-base">
             <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
               Bridal Makeup
             </span>
@@ -68,7 +68,7 @@ export default function Banner() {
             <span className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/25">
               Saree Pre-plated
             </span>
-          </div>
+          </div> */}
         </motion.div>
 
         <motion.div

@@ -23,7 +23,6 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 px-3 md:px-6 pt-3">
         <div className="max-w-7xl mx-auto">
-
           {/* Main Navbar */}
           <div
             className="
@@ -38,7 +37,6 @@ export default function Navbar() {
               shadow-[0_8px_35px_rgba(80,40,50,0.12)]
             "
           >
-
             {/* Decorative Glow */}
             <div className="absolute inset-0 rounded-2xl md:rounded-[22px] bg-gradient-to-r from-[#fff5f6]/50 via-transparent to-[#f8e1e4]/40 pointer-events-none" />
 
@@ -48,7 +46,7 @@ export default function Navbar() {
               className="relative z-10 flex items-center gap-3 group"
             >
               {/* Crown Logo */}
-              <div
+              {/* <div
                 className="
                   flex items-center justify-center
                   w-10 h-10 md:w-11 md:h-11
@@ -63,6 +61,26 @@ export default function Navbar() {
                   size={21}
                   strokeWidth={1.7}
                   className="text-white"
+                />
+              </div> */}
+
+              <div className="relative flex items-center justify-center">
+                <img
+                  src="/images/logo.jpeg"
+                  alt="Aishu Makeover Logo"
+                  className="
+      w-12 h-12
+      md:w-14 md:h-14
+      object-contain
+      group-hover:scale-105
+      transition-transform duration-300
+      rounded-full
+      border-2 border-white
+      shadow-[0_4px_10px_rgba(180,100,110,0.25)]
+      md:shadow-[0_5px_15px_rgba(180,100,110,0.3)]
+      lg:
+      drop-shadow-[0_4px_10px_rgba(180,100,110,0.25)]
+    "
                 />
               </div>
 
@@ -83,7 +101,6 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex relative z-10 items-center gap-2">
-
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -222,15 +239,11 @@ export default function Navbar() {
                 "
               >
                 <div className="p-3">
-
                   {/* Mobile Brand */}
                   <div className="px-4 py-4 mb-2 rounded-xl bg-gradient-to-r from-[#fff5f6] to-[#f9e7e9]">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-[#c98992] flex items-center justify-center">
-                        <Crown
-                          size={18}
-                          className="text-white"
-                        />
+                        <Crown size={18} className="text-white" />
                       </div>
 
                       <div>
@@ -248,7 +261,6 @@ export default function Navbar() {
 
                   {/* Mobile Links */}
                   <div className="space-y-1">
-
                     <Link
                       href="/"
                       onClick={() => setIsOpen(false)}
@@ -300,13 +312,11 @@ export default function Navbar() {
                       <Sparkles size={16} />
                       Admin Panel
                     </Link>
-
                   </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-
         </div>
       </nav>
     </>

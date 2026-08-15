@@ -9,38 +9,49 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/auth";
 
+/* =========================================================
+   GET IMAGES
+   Supports:
+   /api/images?page=1&limit=10
+   ========================================================= */
+
 export async function GET(req: Request) {
   try {
     await connectDB();
 
-    // Get pagination values from URL
     const { searchParams } = new URL(req.url);
 
-    const page = Math.max(
-      Number(searchParams.get("page")) || 1,
-      1
-    );
+    const pageParam = Number(searchParams.get("page"));
+    const limitParam = Number(searchParams.get("limit"));
 
-    const limit = Math.max(
-      Number(searchParams.get("limit")) || 10,
-      1
-    );
+    const page =
+      Number.isFinite(pageParam) && pageParam > 0
+        ? Math.floor(pageParam)
+        : 1;
 
-    // Calculate how many documents to skip
+    const limit =
+      Number.isFinite(limitParam) && limitParam > 0
+        ? Math.min(Math.floor(limitParam), 1000)
+        : 10;
+
     const skip = (page - 1) * limit;
 
-    // Get images + total count at the same time
     const [images, totalImages] = await Promise.all([
       Image.find()
-        .sort({ order: 1, createdAt: -1 })
+        .sort({
+          order: 1,
+          createdAt: -1,
+        })
         .skip(skip)
-        .limit(limit)
-        .lean(),
+        .limit(limit),
 
       Image.countDocuments(),
     ]);
 
-    const totalPages = Math.ceil(totalImages / limit);
+    const totalPages =
+      totalImages === 0
+        ? 0
+        : Math.ceil(totalImages / limit);
 
     return NextResponse.json({
       images,
@@ -54,47 +65,74 @@ export async function GET(req: Request) {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("GET /api/images error:", error);
 
     return NextResponse.json(
-      { error: "Failed to fetch images" },
-      { status: 500 }
+      {
+        error: "Failed to fetch images",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
+/* =========================================================
+   POST IMAGE
+   ========================================================= */
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
+      {
+        error: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
     );
   }
 
   try {
     const formData = await req.formData();
 
-    const file = formData.get("file") as File;
-    const title = formData.get("title") as string;
+    const file = formData.get("file") as File | null;
+    const title = formData.get("title") as string | null;
+
     const description =
       (formData.get("description") as string) || "";
-    const category =
-      (formData.get("category") as string) || "Makeover";
 
-    if (!file || !title) {
+    const category =
+      (formData.get("category") as string) ||
+      "Makeover";
+
+    if (!file || !title?.trim()) {
       return NextResponse.json(
-        { error: "Title and image are required" },
-        { status: 400 }
+        {
+          error: "Title and image are required",
+        },
+        {
+          status: 400,
+        }
       );
     }
+
+    /* ============================
+       Convert file to buffer
+       ============================ */
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const result: UploadApiResponse = await new Promise(
-      (resolve, reject) => {
+    /* ============================
+       Upload to Cloudinary
+       ============================ */
+
+    const result: UploadApiResponse =
+      await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
             {
@@ -102,14 +140,18 @@ export async function POST(req: Request) {
               resource_type: "image",
             },
             (
-              error: UploadApiErrorResponse | undefined,
+              error:
+                | UploadApiErrorResponse
+                | undefined,
               res: UploadApiResponse | undefined
             ) => {
               if (error) {
                 reject(error);
               } else if (!res) {
                 reject(
-                  new Error("No response from Cloudinary")
+                  new Error(
+                    "No response from Cloudinary"
+                  )
                 );
               } else {
                 resolve(res);
@@ -117,28 +159,52 @@ export async function POST(req: Request) {
             }
           )
           .end(buffer);
-      }
-    );
+      });
+
+    /* ============================
+       Save to MongoDB
+       ============================ */
 
     await connectDB();
 
+    /*
+     * Find the highest order so the new
+     * image is placed at the bottom.
+     */
+    const lastImage = await Image.findOne()
+      .sort({ order: -1 })
+      .select("order");
+
+    const nextOrder =
+      typeof lastImage?.order === "number"
+        ? lastImage.order + 1
+        : 0;
+
     const newImage = await Image.create({
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
       category,
       imageUrl: result.secure_url,
       publicId: result.public_id,
+      order: nextOrder,
     });
-
-    return NextResponse.json(newImage, {
-      status: 201,
-    });
-  } catch (error) {
-    console.error(error);
 
     return NextResponse.json(
-      { error: "Upload failed" },
-      { status: 500 }
+      newImage,
+      {
+        status: 201,
+      }
+    );
+  } catch (error) {
+    console.error("POST /api/images error:", error);
+
+    return NextResponse.json(
+      {
+        error: "Upload failed",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

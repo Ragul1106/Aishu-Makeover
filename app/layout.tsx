@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "../components/Providers";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Aishu Makeover | Beauty & Transformation",
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navbar />
+        {/* <Navbar /> */}
         <Providers>{children}</Providers>
       </body>
     </html>

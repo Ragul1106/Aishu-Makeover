@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, Edit2, ArrowUp, ArrowDown } from "lucide-react";
+import {
+  Trash2,
+  Edit2,
+  ArrowUp,
+  ArrowDown,
+  Save,
+  X,
+  Image as ImageIcon,
+  Loader2,
+} from "lucide-react";
 
 interface ImageType {
   _id: string;
@@ -17,176 +26,755 @@ interface Props {
   onUpdate: () => void;
 }
 
-export default function AdminImageList({ images, onUpdate }: Props) {
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
+export default function AdminImageList({
+  images,
+  onUpdate,
+}: Props) {
+  const [editingId, setEditingId] =
+    useState<string | null>(null);
 
-  const safeImages = Array.isArray(images) ? [...images].sort((a, b) => (a.order || 0) - (b.order || 0)) : [];
+  const [editTitle, setEditTitle] =
+    useState("");
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this image?")) return;
+  const [editDesc, setEditDesc] =
+    useState("");
 
-    try {
-      const res = await fetch(`/api/images/${id}`, { method: "DELETE" });
-      if (res.ok) onUpdate();
-      else alert("Failed to delete");
-    } catch {
-      alert("Something went wrong");
-    }
-  };
+  const [savingId, setSavingId] =
+    useState<string | null>(null);
 
-  const startEdit = (img: ImageType) => {
-    setEditingId(img._id);
-    setEditTitle(img.title);
-    setEditDesc(img.description || "");
-  };
+  const [deletingId, setDeletingId] =
+    useState<string | null>(null);
 
-  const saveEdit = async (id: string) => {
-    const res = await fetch(`/api/images/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: editTitle, description: editDesc }),
-    });
+  const [movingId, setMovingId] =
+    useState<string | null>(null);
 
-    if (res.ok) {
-      setEditingId(null);
-      onUpdate();
-    }
-  };
+  /* =====================================================
+     SAFE + SORTED IMAGES
+     ===================================================== */
 
-  // Change order
-  const moveImage = async (index: number, direction: "up" | "down") => {
-  const newImages = [...safeImages];
-  const targetIndex = direction === "up" ? index - 1 : index + 1;
+  const safeImages: ImageType[] =
+    Array.isArray(images)
+      ? [...images].sort(
+          (a, b) =>
+            (a.order ?? 0) -
+            (b.order ?? 0)
+        )
+      : [];
 
-  if (targetIndex < 0 || targetIndex >= newImages.length) return;
+  /* =====================================================
+     DELETE
+     ===================================================== */
 
-  // Swap the two images in the array
-  const temp = newImages[index];
-  newImages[index] = newImages[targetIndex];
-  newImages[targetIndex] = temp;
-
-  // Re-assign clean order numbers (0, 1, 2, 3...)
-  try {
-    await Promise.all(
-      newImages.map((img, i) =>
-        fetch(`/api/images/${img._id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order: i }),
-        })
-      )
+  const handleDelete = async (
+    id: string
+  ) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this image?"
     );
 
-    onUpdate(); // Refresh the list
-  } catch (error) {
-    console.error("Failed to update order:", error);
-    alert("Failed to change order");
-  }
-};
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+
+      const res = await fetch(
+        `/api/images/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(
+          "Failed to delete image"
+        );
+      }
+
+      onUpdate();
+    } catch (error) {
+      console.error(
+        "Delete error:",
+        error
+      );
+
+      alert(
+        "Failed to delete the image."
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  /* =====================================================
+     START EDIT
+     ===================================================== */
+
+  const startEdit = (
+    img: ImageType
+  ) => {
+    setEditingId(img._id);
+    setEditTitle(img.title);
+    setEditDesc(
+      img.description || ""
+    );
+  };
+
+  /* =====================================================
+     CANCEL EDIT
+     ===================================================== */
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditTitle("");
+    setEditDesc("");
+  };
+
+  /* =====================================================
+     SAVE EDIT
+     ===================================================== */
+
+  const saveEdit = async (
+    id: string
+  ) => {
+    if (!editTitle.trim()) {
+      alert("Title is required.");
+      return;
+    }
+
+    try {
+      setSavingId(id);
+
+      const res = await fetch(
+        `/api/images/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            title: editTitle.trim(),
+            description:
+              editDesc.trim(),
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(
+          "Failed to update image"
+        );
+      }
+
+      cancelEdit();
+      onUpdate();
+    } catch (error) {
+      console.error(
+        "Edit error:",
+        error
+      );
+
+      alert(
+        "Failed to update the image."
+      );
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  /* =====================================================
+     MOVE IMAGE
+     ===================================================== */
+
+  const moveImage = async (
+    index: number,
+    direction: "up" | "down"
+  ) => {
+    const targetIndex =
+      direction === "up"
+        ? index - 1
+        : index + 1;
+
+    if (
+      targetIndex < 0 ||
+      targetIndex >= safeImages.length
+    ) {
+      return;
+    }
+
+    const newImages = [
+      ...safeImages,
+    ];
+
+    const currentImage =
+      newImages[index];
+
+    const targetImage =
+      newImages[targetIndex];
+
+    newImages[index] =
+      targetImage;
+
+    newImages[targetIndex] =
+      currentImage;
+
+    try {
+      setMovingId(
+        currentImage._id
+      );
+
+      await Promise.all(
+        newImages.map(
+          (img, i) =>
+            fetch(
+              `/api/images/${img._id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+                body: JSON.stringify({
+                  order: i,
+                }),
+              }
+            )
+        )
+      );
+
+      onUpdate();
+    } catch (error) {
+      console.error(
+        "Order update error:",
+        error
+      );
+
+      alert(
+        "Failed to change image order."
+      );
+    } finally {
+      setMovingId(null);
+    }
+  };
+
+  /* =====================================================
+     UI
+     ===================================================== */
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">
-        Manage Images ({safeImages.length})
-      </h2>
-      <p className="text-sm text-gray-500 mb-4">
-        Use ↑ ↓ buttons to change the order. Top image will show first on the website.
-      </p>
+    <div className="space-y-6">
+
+      {/* HEADER */}
+
+      <div
+        className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-3
+        "
+      >
+        <div>
+          <h2 className="text-2xl font-bold text-[#3a272c]">
+            Manage Images
+          </h2>
+
+          <p className="text-sm text-gray-500 mt-1">
+            {safeImages.length}{" "}
+            {safeImages.length === 1
+              ? "image"
+              : "images"}{" "}
+            uploaded
+          </p>
+        </div>
+
+        <div
+          className="
+            inline-flex
+            items-center
+            gap-2
+            w-fit
+            px-4
+            py-2
+            rounded-full
+            bg-[#fdf0f3]
+            border
+            border-[#efd4da]
+            text-[#9b596a]
+            text-sm
+            font-semibold
+          "
+        >
+          <ImageIcon size={16} />
+
+          {safeImages.length} Images
+        </div>
+      </div>
+
+      {/* INFO */}
+
+      {safeImages.length > 0 && (
+        <div
+          className="
+            rounded-2xl
+            border
+            border-[#efdce0]
+            bg-[#fffafb]
+            px-4
+            py-3
+            text-sm
+            text-[#806a70]
+          "
+        >
+          Use the{" "}
+          <strong className="text-[#9b596a]">
+            ↑
+          </strong>{" "}
+          and{" "}
+          <strong className="text-[#9b596a]">
+            ↓
+          </strong>{" "}
+          buttons to change the gallery order.
+        </div>
+      )}
+
+      {/* EMPTY */}
 
       {safeImages.length === 0 ? (
-        <p className="text-gray-500 py-8 text-center">No images uploaded yet.</p>
+        <div
+          className="
+            flex
+            flex-col
+            items-center
+            justify-center
+            py-16
+            px-6
+            rounded-3xl
+            border-2
+            border-dashed
+            border-[#e5cbd1]
+            bg-gradient-to-br
+            from-[#fffafb]
+            to-[#fdf1f3]
+            text-center
+          "
+        >
+          <div
+            className="
+              w-16
+              h-16
+              rounded-full
+              bg-[#f3d9de]
+              flex
+              items-center
+              justify-center
+              text-[#a75d6c]
+              mb-4
+            "
+          >
+            <ImageIcon size={30} />
+          </div>
+
+          <h3 className="text-lg font-semibold text-[#4a343a]">
+            No Images Found
+          </h3>
+
+          <p className="text-sm text-gray-500 mt-2">
+            Upload your first makeover image.
+          </p>
+        </div>
       ) : (
-        <div className="grid gap-4">
-          {safeImages.map((img, index) => (
-            <div
-              key={img._id}
-              className="flex gap-4 bg-white p-4 rounded-xl shadow-sm items-center"
-            >
-              {/* Order buttons */}
-              <div className="flex flex-col gap-1">
-                <button
-                  onClick={() => moveImage(index, "up")}
-                  disabled={index === 0}
-                  className="p-1.5 hover:bg-gray-100 rounded disabled:opacity-30"
-                  title="Move Up"
-                >
-                  <ArrowUp size={16} />
-                </button>
-                <button
-                  onClick={() => moveImage(index, "down")}
-                  disabled={index === safeImages.length - 1}
-                  className="p-1.5 hover:bg-gray-100 rounded disabled:opacity-30"
-                  title="Move Down"
-                >
-                  <ArrowDown size={16} />
-                </button>
-              </div>
+        <div className="space-y-4">
 
-              <img
-                src={img.imageUrl}
-                alt={img.title}
-                className="w-20 h-20 object-cover rounded-lg"
-              />
+          {safeImages.map(
+            (img, index) => (
+              <div
+                key={img._id}
+                className="
+                  group
+                  bg-white
+                  border
+                  border-[#eee0e3]
+                  rounded-2xl
+                  p-4
+                  shadow-[0_8px_30px_rgba(100,60,70,0.07)]
+                  hover:shadow-[0_12px_35px_rgba(100,60,70,0.12)]
+                  transition-all
+                  duration-300
+                "
+              >
 
-              <div className="flex-1">
-                {editingId === img._id ? (
-                  <div className="space-y-2">
-                    <input
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full px-3 py-1.5 border rounded-lg"
-                    />
-                    <input
-                      value={editDesc}
-                      onChange={(e) => setEditDesc(e.target.value)}
-                      className="w-full px-3 py-1.5 border rounded-lg"
-                      placeholder="Description"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => saveEdit(img._id)}
-                        className="px-3 py-1 bg-green-500 text-white text-sm rounded-lg"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="px-3 py-1 bg-gray-200 text-sm rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                <div className="flex flex-col md:flex-row gap-4">
+
+                  {/* ORDER */}
+
+                  <div
+                    className="
+                      flex
+                      md:flex-col
+                      items-center
+                      justify-center
+                      gap-2
+                      md:w-10
+                    "
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        moveImage(
+                          index,
+                          "up"
+                        )
+                      }
+                      disabled={
+                        index === 0 ||
+                        movingId !== null
+                      }
+                      className="
+                        w-9
+                        h-9
+                        rounded-lg
+                        border
+                        border-[#ead6da]
+                        bg-[#fffafb]
+                        text-[#80505f]
+                        flex
+                        items-center
+                        justify-center
+                        hover:bg-[#f4dce1]
+                        disabled:opacity-30
+                      "
+                    >
+                      <ArrowUp size={17} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        moveImage(
+                          index,
+                          "down"
+                        )
+                      }
+                      disabled={
+                        index ===
+                          safeImages.length -
+                            1 ||
+                        movingId !== null
+                      }
+                      className="
+                        w-9
+                        h-9
+                        rounded-lg
+                        border
+                        border-[#ead6da]
+                        bg-[#fffafb]
+                        text-[#80505f]
+                        flex
+                        items-center
+                        justify-center
+                        hover:bg-[#f4dce1]
+                        disabled:opacity-30
+                      "
+                    >
+                      <ArrowDown
+                        size={17}
+                      />
+                    </button>
                   </div>
-                ) : (
-                  <>
-                    <h3 className="font-medium">{img.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      {img.category} • Order: {img.order ?? index}
-                    </p>
-                  </>
-                )}
-              </div>
 
-              {editingId !== img._id && (
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => startEdit(img)}
-                    className="p-2 hover:bg-gray-100 rounded-lg"
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(img._id)}
-                    className="p-2 hover:bg-red-50 text-red-500 rounded-lg"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  {/* IMAGE */}
+
+                  <div className="relative shrink-0">
+
+                    <img
+                      src={img.imageUrl}
+                      alt={img.title}
+                      className="
+                        w-full
+                        md:w-28
+                        h-52
+                        md:h-28
+                        object-cover
+                        rounded-xl
+                        border
+                        border-[#ead6da]
+                      "
+                    />
+
+                    <span
+                      className="
+                        absolute
+                        top-2
+                        left-2
+                        min-w-7
+                        h-7
+                        px-2
+                        rounded-full
+                        bg-black/65
+                        text-white
+                        text-xs
+                        font-semibold
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+                      #{index + 1}
+                    </span>
+
+                  </div>
+
+                  {/* CONTENT */}
+
+                  <div className="flex-1 min-w-0">
+
+                    {editingId ===
+                    img._id ? (
+                      <div className="space-y-3">
+
+                        <input
+                          value={
+                            editTitle
+                          }
+                          onChange={(e) =>
+                            setEditTitle(
+                              e.target.value
+                            )
+                          }
+                          className="
+                            w-full
+                            px-4
+                            py-2.5
+                            border
+                            border-[#dfc3c9]
+                            rounded-xl
+                            outline-none
+                            focus:border-[#c98992]
+                          "
+                          placeholder="Title"
+                        />
+
+                        <textarea
+                          value={
+                            editDesc
+                          }
+                          onChange={(e) =>
+                            setEditDesc(
+                              e.target.value
+                            )
+                          }
+                          rows={2}
+                          className="
+                            w-full
+                            px-4
+                            py-2.5
+                            border
+                            border-[#dfc3c9]
+                            rounded-xl
+                            outline-none
+                            resize-none
+                            focus:border-[#c98992]
+                          "
+                          placeholder="Description"
+                        />
+
+                        <div className="flex gap-2">
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              saveEdit(
+                                img._id
+                              )
+                            }
+                            disabled={
+                              savingId ===
+                              img._id
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-2
+                              px-4
+                              py-2
+                              rounded-xl
+                              bg-[#9b596a]
+                              text-white
+                              text-sm
+                              hover:bg-[#814657]
+                              disabled:opacity-50
+                            "
+                          >
+                            {savingId ===
+                            img._id ? (
+                              <Loader2
+                                size={16}
+                                className="animate-spin"
+                              />
+                            ) : (
+                              <Save
+                                size={16}
+                              />
+                            )}
+
+                            {savingId ===
+                            img._id
+                              ? "Saving..."
+                              : "Save"}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={
+                              cancelEdit
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-2
+                              px-4
+                              py-2
+                              rounded-xl
+                              bg-gray-100
+                              text-gray-700
+                              text-sm
+                              hover:bg-gray-200
+                            "
+                          >
+                            <X size={16} />
+                            Cancel
+                          </button>
+
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+
+                        <h3 className="text-lg font-semibold text-[#3a272c]">
+                          {img.title}
+                        </h3>
+
+                        {img.description && (
+                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                            {
+                              img.description
+                            }
+                          </p>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mt-3">
+
+                          <span
+                            className="
+                              px-2.5
+                              py-1
+                              rounded-full
+                              bg-[#fdf0f3]
+                              text-[#9b596a]
+                              text-xs
+                              font-medium
+                            "
+                          >
+                            {img.category ||
+                              "Makeover"}
+                          </span>
+
+                          <span className="text-xs text-gray-400 py-1">
+                            Order:{" "}
+                            {img.order ??
+                              index}
+                          </span>
+
+                        </div>
+
+                        {/* ACTIONS */}
+
+                        <div className="flex gap-2 mt-4">
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              startEdit(
+                                img
+                              )
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-2
+                              px-4
+                              py-2
+                              rounded-xl
+                              bg-[#fdf1f3]
+                              text-[#8d4d5d]
+                              text-sm
+                              font-medium
+                              hover:bg-[#f4dce1]
+                            "
+                          >
+                            <Edit2
+                              size={16}
+                            />
+                            Edit
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDelete(
+                                img._id
+                              )
+                            }
+                            disabled={
+                              deletingId ===
+                              img._id
+                            }
+                            className="
+                              inline-flex
+                              items-center
+                              gap-2
+                              px-4
+                              py-2
+                              rounded-xl
+                              bg-red-50
+                              text-red-500
+                              text-sm
+                              font-medium
+                              hover:bg-red-100
+                              disabled:opacity-50
+                            "
+                          >
+                            {deletingId ===
+                            img._id ? (
+                              <Loader2
+                                size={16}
+                                className="animate-spin"
+                              />
+                            ) : (
+                              <Trash2
+                                size={16}
+                              />
+                            )}
+
+                            {deletingId ===
+                            img._id
+                              ? "Deleting..."
+                              : "Delete"}
+                          </button>
+
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            )
+          )}
+
         </div>
       )}
     </div>

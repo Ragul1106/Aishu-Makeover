@@ -14,11 +14,11 @@ const playfair = Playfair_Display({
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Services", href: "/services" },
-    { name: "Gallery", href: "#gallery" },
-  ];
+  // const navItems = [
+  //   { name: "Home", href: "/" },
+  //   { name: "Services", href: "/services" },
+  //   { name: "Gallery", href: "#gallery" },
+  // ];
 
   return (
     <>
@@ -125,7 +125,7 @@ export default function Navbar() {
             {/* ================= DESKTOP MENU ================= */}
             <div className="hidden md:flex relative z-10 items-center gap-2">
 
-              {navItems.map((item) => (
+              {/* {navItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
@@ -146,7 +146,7 @@ export default function Navbar() {
 
                   {item.name}
 
-                  {/* Underline */}
+                 
                   <span
                     className="
                       absolute
@@ -162,7 +162,7 @@ export default function Navbar() {
                   />
 
                 </Link>
-              ))}
+              ))} */}
 
               {/* Divider */}
               <div className="h-7 w-px bg-[#d8c5c7] mx-2" />
@@ -309,7 +309,7 @@ export default function Navbar() {
                 <div className="p-3">
 
                   {/* Mobile Brand Header */}
-                  <div
+                  {/* <div
                     className="
                       px-4 py-4
                       mb-2
@@ -318,12 +318,12 @@ export default function Navbar() {
                       from-[#fff5f6]
                       to-[#f9e7e9]
                     "
-                  >
+                  > */}
 
-                    <div className="flex items-center gap-3">
+                    {/* <div className="flex items-center gap-3"> */}
 
                       {/* Logo */}
-                      <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                      {/* <div className="w-10 h-10 flex items-center justify-center shrink-0">
                         <img
                           src="/images/logo.jpeg"
                           alt="Aishu Makeover"
@@ -333,10 +333,10 @@ export default function Navbar() {
                             rounded-full
                           "
                         />
-                      </div>
+                      </div> */}
 
                       {/* Brand */}
-                      <div>
+                      {/* <div>
 
                         <p
                           className={`
@@ -363,17 +363,17 @@ export default function Navbar() {
                           Beauty & Glamour
                         </p>
 
-                      </div>
+                      </div> */}
 
-                    </div>
+                    {/* </div> */}
 
-                  </div>
+                  {/* </div> */}
 
 
                   {/* Mobile Links */}
                   <div className="space-y-1">
 
-                    {navItems.map((item) => (
+                    {/* {navItems.map((item) => (
                       <Link
                         key={item.name}
                         href={item.href}
@@ -391,7 +391,7 @@ export default function Navbar() {
                       >
                         {item.name}
                       </Link>
-                    ))}
+                    ))} */}
 
 
                     {/* Mobile Admin */}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Crown, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Playfair_Display } from "next/font/google";
 
@@ -16,91 +16,115 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Home", href: "/" },
+    { name: "Services", href: "/services" },
     { name: "Gallery", href: "#gallery" },
   ];
 
   return (
     <>
+      {/* ================= NAVBAR ================= */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-3 md:px-6 pt-3">
         <div className="max-w-7xl mx-auto">
+
           {/* Main Navbar */}
           <div
             className="
               relative
               h-16 md:h-[76px]
-              px-5 md:px-8
+              px-4 sm:px-5 md:px-8
               flex items-center justify-between
               rounded-2xl md:rounded-[22px]
-              bg-white/75
+              bg-white/80
               backdrop-blur-xl
               border border-white/70
               shadow-[0_8px_35px_rgba(80,40,50,0.12)]
             "
           >
-            {/* Decorative Glow */}
-            <div className="absolute inset-0 rounded-2xl md:rounded-[22px] bg-gradient-to-r from-[#fff5f6]/50 via-transparent to-[#f8e1e4]/40 pointer-events-none" />
 
-            {/* Logo */}
+            {/* Background Glow */}
+            <div
+              className="
+                absolute inset-0
+                rounded-2xl md:rounded-[22px]
+                bg-gradient-to-r
+                from-[#fff5f6]/60
+                via-transparent
+                to-[#f8e1e4]/50
+                pointer-events-none
+              "
+            />
+
+            {/* ================= LOGO ================= */}
             <Link
               href="/"
-              className="relative z-10 flex items-center gap-3 group"
+              className="
+                relative z-10
+                flex items-center gap-2.5 md:gap-3
+                group
+              "
+              onClick={() => setIsOpen(false)}
             >
-              {/* Crown Logo */}
-              {/* <div
-                className="
-                  flex items-center justify-center
-                  w-10 h-10 md:w-11 md:h-11
-                  rounded-full
-                  bg-gradient-to-br from-[#dca7ad] to-[#b97882]
-                  shadow-[0_5px_18px_rgba(185,120,130,0.35)]
-                  group-hover:scale-105
-                  transition-transform duration-300
-                "
-              >
-                <Crown
-                  size={21}
-                  strokeWidth={1.7}
-                  className="text-white"
-                />
-              </div> */}
 
-              <div className="relative flex items-center justify-center">
+              {/* Logo Image */}
+              <div className="relative flex items-center justify-center shrink-0">
                 <img
                   src="/images/logo.jpeg"
                   alt="Aishu Makeover Logo"
                   className="
-      w-12 h-12
-      md:w-14 md:h-14
-      object-contain
-      group-hover:scale-105
-      transition-transform duration-300
-      rounded-full
-      border-2 border-white
-      shadow-[0_4px_10px_rgba(180,100,110,0.25)]
-      md:shadow-[0_5px_15px_rgba(180,100,110,0.3)]
-      lg:
-      drop-shadow-[0_4px_10px_rgba(180,100,110,0.25)]
-    "
+                    w-11 h-11
+                    md:w-14 md:h-14
+                    object-contain
+                    rounded-full
+                    drop-shadow-[0_4px_12px_rgba(180,100,110,0.25)]
+                    group-hover:scale-105
+                    transition-transform duration-300
+                  "
                 />
               </div>
 
               {/* Brand Name */}
               <div className="flex flex-col leading-none">
+
                 <span
-                  className={`${playfair.className} text-[21px] md:text-[26px] font-semibold tracking-tight text-[#30282a]`}
+                  className={`
+                    ${playfair.className}
+                    text-[20px]
+                    sm:text-[22px]
+                    md:text-[27px]
+                    font-semibold
+                    tracking-tight
+                    text-[#30282a]
+                    whitespace-nowrap
+                  `}
                 >
-                  Aishu
-                  <span className="text-[#c98992]"> Makeover</span>
+                  Aishu{" "}
+                  <span className="text-[#c98992]">
+                    Makeover
+                  </span>
                 </span>
 
-                <span className="hidden sm:block mt-1 text-[8px] md:text-[9px] uppercase tracking-[0.35em] text-[#9b777c]">
+                {/* Tagline */}
+                <span
+                  className="
+                    hidden sm:block
+                    mt-1
+                    text-[7px]
+                    md:text-[9px]
+                    uppercase
+                    tracking-[0.3em]
+                    text-[#9b777c]
+                  "
+                >
                   Beauty • Bridal • Glamour
                 </span>
+
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
+
+            {/* ================= DESKTOP MENU ================= */}
             <div className="hidden md:flex relative z-10 items-center gap-2">
+
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -114,12 +138,15 @@ export default function Navbar() {
                     rounded-full
                     hover:bg-[#f9e8ea]
                     hover:text-[#b97882]
-                    transition-all duration-300
+                    transition-all
+                    duration-300
                     group
                   "
                 >
+
                   {item.name}
 
+                  {/* Underline */}
                   <span
                     className="
                       absolute
@@ -128,17 +155,19 @@ export default function Navbar() {
                       bg-[#c98992]
                       scale-x-0
                       group-hover:scale-x-100
-                      transition-transform duration-300
+                      transition-transform
+                      duration-300
                       origin-center
                     "
                   />
+
                 </Link>
               ))}
 
               {/* Divider */}
               <div className="h-7 w-px bg-[#d8c5c7] mx-2" />
 
-              {/* Admin Button */}
+              {/* ================= ADMIN BUTTON ================= */}
               <Link
                 href="/admin"
                 className="
@@ -147,7 +176,9 @@ export default function Navbar() {
                   flex items-center gap-2
                   px-5 py-2.5
                   rounded-full
-                  bg-gradient-to-r from-[#dba7ad] to-[#c4868e]
+                  bg-gradient-to-r
+                  from-[#dba7ad]
+                  to-[#c4868e]
                   text-white
                   text-sm
                   font-medium
@@ -157,18 +188,28 @@ export default function Navbar() {
                   transition-all duration-300
                 "
               >
+
                 <Sparkles
                   size={15}
-                  className="group-hover:rotate-12 transition-transform"
+                  className="
+                    group-hover:rotate-12
+                    transition-transform
+                    duration-300
+                  "
                 />
+
                 Admin
+
               </Link>
+
             </div>
 
-            {/* Mobile Menu Button */}
+
+            {/* ================= MOBILE BUTTON ================= */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
               className="
                 relative z-10
                 md:hidden
@@ -178,35 +219,61 @@ export default function Navbar() {
                 bg-[#f8e5e7]
                 text-[#8f6269]
                 hover:bg-[#f1d4d8]
-                transition
+                transition-all
+                duration-300
               "
             >
+
               <AnimatePresence mode="wait">
+
                 {isOpen ? (
                   <motion.div
                     key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
+                    initial={{
+                      rotate: -90,
+                      opacity: 0,
+                    }}
+                    animate={{
+                      rotate: 0,
+                      opacity: 1,
+                    }}
+                    exit={{
+                      rotate: 90,
+                      opacity: 0,
+                    }}
                   >
                     <X size={22} />
                   </motion.div>
                 ) : (
                   <motion.div
                     key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
+                    initial={{
+                      rotate: 90,
+                      opacity: 0,
+                    }}
+                    animate={{
+                      rotate: 0,
+                      opacity: 1,
+                    }}
+                    exit={{
+                      rotate: -90,
+                      opacity: 0,
+                    }}
                   >
                     <Menu size={22} />
                   </motion.div>
                 )}
+
               </AnimatePresence>
+
             </button>
+
           </div>
 
-          {/* Mobile Menu */}
+
+          {/* ================= MOBILE MENU ================= */}
           <AnimatePresence>
+
             {isOpen && (
               <motion.div
                 initial={{
@@ -238,85 +305,132 @@ export default function Navbar() {
                   shadow-[0_15px_40px_rgba(80,40,50,0.15)]
                 "
               >
+
                 <div className="p-3">
-                  {/* Mobile Brand */}
-                  <div className="px-4 py-4 mb-2 rounded-xl bg-gradient-to-r from-[#fff5f6] to-[#f9e7e9]">
+
+                  {/* Mobile Brand Header */}
+                  <div
+                    className="
+                      px-4 py-4
+                      mb-2
+                      rounded-xl
+                      bg-gradient-to-r
+                      from-[#fff5f6]
+                      to-[#f9e7e9]
+                    "
+                  >
+
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#c98992] flex items-center justify-center">
-                        <Crown size={18} className="text-white" />
+
+                      {/* Logo */}
+                      <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                        <img
+                          src="/images/logo.jpeg"
+                          alt="Aishu Makeover"
+                          className="
+                            w-10 h-10
+                            object-contain
+                            rounded-full
+                          "
+                        />
                       </div>
 
+                      {/* Brand */}
                       <div>
+
                         <p
-                          className={`${playfair.className} text-lg font-semibold text-[#30282a]`}
+                          className={`
+                            ${playfair.className}
+                            text-lg
+                            font-semibold
+                            text-[#30282a]
+                          `}
                         >
-                          Aishu Makeover
+                          Aishu{" "}
+                          <span className="text-[#c98992]">
+                            Makeover
+                          </span>
                         </p>
-                        <p className="text-[9px] uppercase tracking-[0.25em] text-[#9b777c]">
+
+                        <p
+                          className="
+                            text-[8px]
+                            uppercase
+                            tracking-[0.25em]
+                            text-[#9b777c]
+                          "
+                        >
                           Beauty & Glamour
                         </p>
+
                       </div>
+
                     </div>
+
                   </div>
+
 
                   {/* Mobile Links */}
                   <div className="space-y-1">
-                    <Link
-                      href="/"
-                      onClick={() => setIsOpen(false)}
-                      className="
-                        flex items-center
-                        px-4 py-3.5
-                        rounded-xl
-                        text-[#403638]
-                        font-medium
-                        hover:bg-[#f9e8ea]
-                        hover:text-[#b97882]
-                        transition
-                      "
-                    >
-                      Home
-                    </Link>
 
-                    <Link
-                      href="#gallery"
-                      onClick={() => setIsOpen(false)}
-                      className="
-                        flex items-center
-                        px-4 py-3.5
-                        rounded-xl
-                        text-[#403638]
-                        font-medium
-                        hover:bg-[#f9e8ea]
-                        hover:text-[#b97882]
-                        transition
-                      "
-                    >
-                      Gallery
-                    </Link>
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className="
+                          flex items-center
+                          px-4 py-3.5
+                          rounded-xl
+                          text-[#403638]
+                          font-medium
+                          hover:bg-[#f9e8ea]
+                          hover:text-[#b97882]
+                          transition-all duration-300
+                        "
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
 
+
+                    {/* Mobile Admin */}
                     <Link
                       href="/admin"
                       onClick={() => setIsOpen(false)}
                       className="
                         mt-2
-                        flex items-center justify-center gap-2
+                        flex items-center
+                        justify-center
+                        gap-2
                         px-4 py-3.5
                         rounded-xl
-                        bg-gradient-to-r from-[#dba7ad] to-[#c4868e]
+                        bg-gradient-to-r
+                        from-[#dba7ad]
+                        to-[#c4868e]
                         text-white
                         font-medium
                         shadow-lg
+                        hover:shadow-xl
+                        transition-all
                       "
                     >
+
                       <Sparkles size={16} />
+
                       Admin Panel
+
                     </Link>
+
                   </div>
+
                 </div>
+
               </motion.div>
             )}
+
           </AnimatePresence>
+
         </div>
       </nav>
     </>

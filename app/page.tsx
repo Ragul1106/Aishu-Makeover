@@ -3,18 +3,16 @@ import Banner from "../components/Banner";
 import ImageGallery from "../components/ImageGallery";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import InstagramButton from "@/components/InstagramButton";
-
+import { MessageCircle } from "lucide-react";
 
 export default function Home() {
   return (
-    <main >
+    <main>
       <Navbar />
       <Banner />
       <ImageGallery />
       <InstagramButton />
       <WhatsAppButton />
-     
-      
       <footer className="relative overflow-hidden bg-[#211b1d] text-white">
         {/* Decorative Background Glow */}
         <div className="absolute -top-32 -left-32 w-80 h-80 bg-[#e8b4b8]/15 rounded-full blur-3xl pointer-events-none" />
@@ -116,20 +114,21 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
-            inline-flex items-center justify-center gap-2
-            px-6 py-3
-            rounded-full
-            bg-gradient-to-r from-[#e8b4b8] to-[#c98992]
-            text-[#2d2224]
-            font-medium
-            text-sm
-            shadow-[0_8px_25px_rgba(201,137,146,0.25)]
-            hover:shadow-[0_10px_30px_rgba(201,137,146,0.4)]
-            hover:-translate-y-0.5
-            transition-all duration-300
-          "
+    inline-flex items-center justify-center gap-2
+    px-6 py-3
+    rounded-full
+    bg-gradient-to-r from-[#e8b4b8] to-[#c98992]
+    text-[#2d2224]
+    font-medium
+    text-sm
+    shadow-[0_8px_25px_rgba(201,137,146,0.25)]
+    hover:shadow-[0_10px_30px_rgba(201,137,146,0.4)]
+    hover:-translate-y-0.5
+    transition-all duration-300
+  "
               >
-                💬 WhatsApp Booking
+                <MessageCircle size={18} strokeWidth={2} />
+                WhatsApp Booking
               </a>
             </div>
           </div>

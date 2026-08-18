@@ -196,10 +196,9 @@ export default function AdminImageForm({ onSuccess }: Props) {
           "
         >
           <option value="Makeover">Makeover</option>
-          <option value="Bridal">Bridal</option>
-          <option value="Party">Party</option>
-          <option value="Hair">Hair</option>
-          <option value="Skin">Skin</option>
+          <option value="Party">Jewels</option>
+          <option value="Hair">Mehndi Design</option>
+          
         </select>
       </div>
 
